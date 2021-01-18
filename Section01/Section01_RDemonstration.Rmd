@@ -1,0 +1,225 @@
+---
+title: "ECON 172 - Section 1 : Introduction to R"
+author: "Roberto Rocha and Jed Silver"
+date: "Spring 2021"
+header-includes:
+   - \usepackage{dcolumn}
+output:
+  pdf_document:
+    number_sections: true
+  html_document:
+    code_folding: hide
+editor_options:
+  chunk_output_type: inline
+---
+
+# Welcome to Econ 172 Section
+
+Hi! We are your GSIs for Econ 172 this semester, Roberto and Jed. Our goal is to make these sections as interactive as possible. The more you and your classmates participate, the more everyone will get out of section. We will mainly focus on reviewing the econometric methods discussed in lecture and applying them using R. 
+
+Feel free to attend any of the sections led by the GSI of the section you enrolled in. 
+
+**Roberto** [robertohsurocha@berkeley.edu](robertohsurocha@berkeley.edu)
+
+
+\begin{itemize}
+\item Monday 2-3 PM (101)
+ 
+\item Tuesday 10-11 AM (102)
+ 
+\item Friday 9-10 AM (106)
+ 
+\item Office Hours: TBD
+ 
+\end{itemize}
+ 
+**Jed** [jed_silver@berkeley.edu](jed_silver@berkeley.edu)
+
+\begin{itemize}
+\item Wednesday 3-4 PM (103)
+ 
+\item Thursday 9-10 AM (104)
+ 
+\item Thursday 5-6 PM (105)
+ 
+\item Office Hours: Thursday 6-7 PM
+ 
+\end{itemize}
+
+All of the Zoom links for section are on bCourses. We will also post all materials on bCourses. 
+
+Please try to attend section regularly if you are in a time zone that allows you to do so and if not, please watch the recordings that we will post on bCourses. As in lecture, we'd appreciate if you keep your camera on for section, but understand that this may not always be possible for all students. We understand that things are still difficult this semester and we will try to be as accommodating as possible, so please communicate any issues to us and we will try our best to help. 
+
+Feel free to email with any questions you may have that can be answered over email, for example, administrative questions. Please include [ECON 172] in the subject line of any email communications. We will do do our best to respond to all emails within 48 hours, perhaps longer over weekends. For in-depth questions that will require a longer response, come by office hours instead. Often an in-person discussion can help clear things up more effectively than communication over email.
+
+
+# Welcome to R
+
+R is a programming language and environment for statistical computing and graphics which is free to use and runs on Windows, Unix and MacOS. To do analysis in R, one can either write one’s own commands or take advantage of the huge number of pre-existing packages written by R users and freely available. We are not assuming any prior knowledge of R. If you are not familiar with programming, it can be a bit tricky at first but we are here to make sure you get the hang of it. R is used throughout the social sciences and in industry, so while this course will provide a basic overview, you may find it wortwhile to dive a bit deeper and really master it.
+
+## Getting Started
+
+### Using R on your local machine (optional)
+R can be downloaded from [https://cran.rstudio.com/](https://cran.rstudio.com/). We also recommend downloading RStudio, a user interface which makes R easier to use. It can be downloaded from [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/).
+
+If you run R on your local computer, you will need to install any packages you want to use (just one time), then load them into R’s library for the current session. After that, it’s easy to access any of the commands in the package (which are also generally extensively documented in a sort of user guide for the package).
+
+### Using R on your UC Berkeley Datahub (recommended)
+RStudio also runs on the UC Berkeley Datahub, so you don’t need to install it locally on your computer. To start RStudio on Datahub, simply go to: [https://r.datahub.berkeley.edu/](**https://r.datahub.berkeley.edu/**)
+
+In our sections (and for the problem sets), we are going to show you this way of using RStudio. However, anything that we show you should also work on your local machine.
+
+## R Code
+When we use R, we want to write and save our commands in a script. This will let us reproduce everything we do without having to retype our commands every time we work on a project. To do this, you can write and save a file as a .R file, which typically contains only code and code comments. You can find a separate .R file containing the code used to conduct the analysis below in the folder with the material for this section.
+
+## RMarkdown
+What's even nicer about R is a file format called RMarkdown, such as the one you are currently working in. This file type allows you to combine text, mathematical equations (in a format called LaTeX), code as well as dynamic output from this code, and automatically compile / output everything into a pdf document. (In RMarkdown language, this process is called "knitting" the document.)
+
+## Setting up the Environment
+First, we need to set up the R environment, including installing all the required packages, loading all the required packages. This is done using R-code. The way to let RMarkdown know that the following output is a 'code chunk' is by enclosing the code chunk in triple quotations, as below. The code chunk indicator is followed by curly brackets, and r (indicating this code chunk is in the R language), a name for the code chunk (here "setup"), and some additional parameters. The parameter "results='hide'" and "message=FALSE" lets RMarkdown know that we will not want to include the output of or any messages generated by this code chunk in the pdf document (but the code will still run).
+
+In your code, you can add comments, using # (beginning of the line) and ## (end of the line). These comments are not run as code, but will help your later self (and others reading your code) to understand what you were doing. 
+
+```{r setup, results='hide', message=FALSE}
+knitr::opts_chunk$set(echo = TRUE) ## sets global option to include code chunks in-line
+#install.packages("haven") ## only run once to install
+library(haven) #this library allows you to load datasets in Stata format
+#install.packages("tidyverse") ## only run once to install
+library(tidyverse)
+#install.packages("summarytools") ## only run once to install
+library(summarytools)
+#install.packages("stargazer") ## only run once to install
+library(stargazer) ##This package is great for making tables in .html, .tex and many other formats.
+#install.packages("broom") ## only run once to install
+library(broom)
+```
+
+The code chunk specifies that, by default, code chunks are part of the pdf output. Next, it installs a few packages. You only need to run this installation once. Afterwards, the package will remain installed on your datahub. (Remove the # before the install.packages commands to install each package for the first time, then "comment out" these lines using #, as above.) Next, the "library" command lets R know that you will want to use these packages in your code.
+
+## Loading Data
+The first step in using R for statistical analysis is to store data in what R calls a “data frame,” a matrix whose columns have different modes (like numeric, words, etc.) and each row is a unit of observation (i.e: a person or a country, etc.)
+
+R can load data from many types of files, including .csv and .txt. R has its own type of data file, with a .rds or .Rdata extension, and can also load data from Stata, SPSS, and SAS (other statistics computing programs) with the appropriate commands. The .rds format allows for a single object to be saved at a time, like a single dataset. The .RData format allows for multiple objects to be saved at once. Either one is a great way to save your data in R format.
+
+For this section, we will be using data from Robinson, Acemoglu and Johnson (2001). For your convenience, the following link imports this data directly into your Datahub repository:
+[https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdennistegger%2FECON172_Fall2019_SectionMaterial&urlpath=rstudio%2F](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdennistegger%2FECON172_Fall2019_SectionMaterial&urlpath=rstudio%2F) The folder should now appear as "ECON172_Fall2019_SectionMaterial" on your workspace (bottom right).
+
+When we load a dataframe in R, we give it a name for reference, such as `mydata` or something more specific, like `prop_rights`. We also need to tell R where to find the data. We can do that by specifying a full file path to its exact location of the data. For the purposes of this section, we’ll use the dataset `prop_right`" which is an example dataset that contains data on a property rights index (protection against expropriation risk), GDP per capita and other variables for countries that were European colonies in the past.
+
+```{r load, results='hide', message=FALSE}
+## Load in data in csv form, from the folder just loaded into your directory.
+## Important: Paths are always relative to the RMarkdown file location
+##            Alternatively, specify your working directory using 
+##            knitr::opts_chunk$set(root.dir = "xxx")
+prop_rights <- read.csv("prop_rights.csv")
+```
+
+Next we can visualize the database we just imported, and take a look at what variables are included. To do so, it's easiest to click directly on the dataset in your Environment pane on the top right in RStudio.
+
+```{r lookatdata, results='hide', message=FALSE}
+## Let's take a look on the dataset.
+prop_rights ## print the dataframe to screen
+head(prop_rights) ## or print first few observations
+
+## Let's take a look the variables in this dataset.
+names(prop_rights) ## just print
+prop_rights_variables <- names(prop_rights) ## store list, assigned "prop_rights_variables"
+prop_rights_variables ## take a look at this list
+```
+
+# Analysis in R
+
+## Summary Statistics
+Once a dataframe is loaded in R, it’s very easy to run basic summary statistics. Unlike many other statistics programs, R provides fairly minimal output, and it’s possible to store the results of a command without ever displaying them. For example, we may be interested in summary statistics for the GDP per capita of countries in the sample, which we can get by typing `{summary(prop_rights\$gdppc)`. This command instructs R to look in the dataframe listed before the $ symbol (in this case, `prop_rights`), and to summarize the variable that follows the \$ symbol (in this case, `gdppc`). Note, the `results = 'markup'`  bit tells RMarkdown to display the output of the code exactly as displayed in the R console.
+
+```{r sumstats, results = 'markup'}
+## Let's look at some summary statistics.
+## Here is the min, 25%-ile, median, mean, 75%-ile, and max for the variable gdppc
+summary(prop_rights$gdppc) ## just print
+prop_rights_sumstats <- summary(prop_rights$gdppc) ## store summary, "prop_rights_variables"
+prop_rights_sumstats ## take a look at this summary
+```
+
+Or, we may be interested specifically in the **mean** value of GDP per capita for countries in the sample specifically, which we can get by typing `mean(prop_rights\$gdppc)`. As before, this command instructs R to look in the `prop_rights` dataframe and calculate the mean for the variable `gdppc`. We can store value resulting from this calculation, by using the `<-` symbol to store the results in a new object called `meangdp`, which can be called by typing `meangdp` into the console, or used in another command or context later on.
+
+```{r sumstats2, results = 'markup'}
+## Let's look specifically at mean GDP
+mean(prop_rights$gdppc) ## just print
+meangdp <- mean(prop_rights$gdppc) ## save as a variable, called "meangdp"
+meangdp ## take a look at the value stored in of "meangdp"
+```
+
+Similar commands exist for standard deviation (`sd`), variance (`var`), minimum (`min`), maximum (`max`), median (`med`), range (`range`) and quantile (`quantile`).
+
+## Regression
+Linear regression is also very straightforward to apply in R. The lm command, which comes preloaded, can be used for univariate or multivariate regression:
+\[
+Y_i = \alpha + \beta X_{1,i} + \gamma X_{2,i} + ... + e_{i}
+\]
+(Note: The above mathematical expression was written in a typesetting environment called \LaTeX, and can easily be included in RMarkdown. For examples, see the Script.) Examples of how to run a regression of log GDP per capita on protection against the property rights index (protection) and latitude are below:
+
+```{r regression1, results= 'markup'}
+## Univariate regression of log gdp per capita on property rights index.
+lm(logGDP ~ protection, data=prop_rights) # display regression results
+## Multivariate, adding absolute latitude.
+lm(logGDP ~ protection + lat_abst, data=prop_rights) # display regression results
+## Storing results
+reg1 <- lm(logGDP ~ protection, data=prop_rights) # save results, assign to "reg1"
+reg2 <- lm(logGDP ~ protection + lat_abst, data=prop_rights) # save results, assign to "reg2"
+```
+
+In the last example, we store the univariate regression results in the object reg1 and the multivariate regression results in the object reg2. If you try this in R, you’ll notice the results don’t display on the screen when you store the results, but you can access them by naming the object.
+
+```{r regression2, results='markup'}
+## Now access regression results for the multivariate regression
+summary(reg2) # access complete regression results
+```
+
+## Tables
+There are many packages in R that let one create very nice tables. We recommend `stargazer`. Take the two regressions we ran, stored as `reg1` and `reg2`, and say we want to export both to a table to be used in word or LaTeX.
+
+To include the final table in the knitted pdf created by RMarkdown, you can use the following template. (Note, we want to use `results='asis'` and `header=FALSE`, in order for RMarkdown to compile the LaTeX table into a pretty format when knitting the pdf):
+
+<div align="center">
+```{r regressiontable, results='asis', header=FALSE}
+stargazer(reg1, reg2,
+          out="Table 1",type="latex",header=FALSE, table.placement = "!h",
+          title="Property Rights and Development",align=TRUE,
+          report = "vc*st", omit.stat=c("LL","ser","f","rsq","adj.rsq"),no.space=TRUE)
+```
+</div>
+
+The above command combines regression output saved in reg1 and reg2 into one table. Stargazer lets you specify title, alignment of coefficients inside columns and rows, which statistics to report (here, the variable names `v`, coefficients `c`, significance stars `*`, standard errors `s` and t-statistics `t`). Moreover, you can tell it to omit statistics such as the log-likelihood `LL`, the R^2 `rsq`, etc. You can also set the table placement in the final pdf (here, `table.placement="H"` means that the table will be placed directly after the code chunk). Stargazer has extensive documentation (try `??stargazer` in R) and can also be used to make great summary statistics tables - try it out! Note that `type="latex"` produces table code that can be interpreted by LateX to produce nicely-formatted tables when you knit your RMarkdown file to PDF. Another alternative is to use the `type="text"` option to have a nicely formatted version of the table print to screen (for example, to later copy/paste into a word document).
+
+## Plotting
+R also makes it easy to do basic plots. For example, one might want to create a scatterplot from two variables, and graph the regression line - or line of best fit - on the plot. This is easy to do with the plot command, which as a default plots the first variable listed on the horizontal axis, and the second on the vertical axis. Below we show a plot of the property rights index (protection against expropriation risk) and log of GDP per capita with titles and labels. We also use the `abline` command to add a regression line to the graph.
+
+<div align="center">
+```{r plot}
+## A scatterplot with titles and line of best fit from univariate regression
+plot(prop_rights$protection,prop_rights$logGDP,
+     xlab="Protection against expropriation", ylab="Log (DP per capita)")
+abline(reg1) # line of best fit using regression results as per "reg1"
+```
+</div>
+# Resources for further study
+\begin{itemize}
+\item UCLA has a number of excellent resources to help you learn more about how to use R, available at: http://www.ats.ucla.edu/stat/r/. 
+
+\item You can also find interactive lessons at Try R http://tryr.codeschool.com/ for practice writing code.
+
+\item We also recommend the text on the syllabus, Hanck, Christoph, Martin Arnold, Alexander Gerber and Martin Schmelzer. (2018). Introduction to Econometrics with R, https://www.econometrics-with-r.org/.
+
+\item You may also find https://www.r-bloggers.com/ to be a useful resource for specific questions.
+
+\item Finally, we include two useful resources that summarize useful R commands and common RMarkdown features.
+\end{itemize}
+
+\newpage
+\centering\includegraphics[page=1,angle=90,width=\textwidth]{RCheatSheet.pdf}
+\newpage
+\centering\includegraphics[page=2,angle=90,width=\textwidth]{RCheatSheet.pdf}
+\newpage
+\centering\includegraphics[page=1,angle=90,width=\textwidth]{RMarkdownCheatSheet.pdf}
+\newpage
+\centering\includegraphics[page=2,angle=90,width=\textwidth]{RMarkdownCheatSheet.pdf}
