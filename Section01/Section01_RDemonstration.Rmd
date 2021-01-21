@@ -130,7 +130,7 @@ prop_rights_variables ## take a look at this list
 # Analysis in R
 
 ## Summary Statistics
-Once a dataframe is loaded in R, it’s very easy to run basic summary statistics. Unlike many other statistics programs, R provides fairly minimal output, and it’s possible to store the results of a command without ever displaying them. For example, we may be interested in summary statistics for the GDP per capita of countries in the sample, which we can get by typing `{summary(prop_rights\$gdppc)`. This command instructs R to look in the dataframe listed before the $ symbol (in this case, `prop_rights`), and to summarize the variable that follows the \$ symbol (in this case, `gdppc`). Note, the `results = 'markup'`  bit tells RMarkdown to display the output of the code exactly as displayed in the R console.
+Once a dataframe is loaded in R, it’s very easy to run basic summary statistics. Unlike many other statistics programs, R provides fairly minimal output, and it’s possible to store the results of a command without ever displaying them. For example, we may be interested in summary statistics for the GDP per capita of countries in the sample, which we can get by typing `summary(prop_rights\$gdppc)`. This command instructs R to look in the dataframe listed before the $ symbol (in this case, `prop_rights`), and to summarize the variable that follows the \$ symbol (in this case, `gdppc`). Note, the `results = 'markup'`  bit tells RMarkdown to display the output of the code exactly as displayed in the R console.
 
 ```{r sumstats, results = 'markup'}
 ## Let's look at some summary statistics.
