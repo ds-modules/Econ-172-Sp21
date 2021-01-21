@@ -1,3 +1,5 @@
+#Get started with R
+print("Hello World!")
 2+2
 
 #install.packages("haven") ## only run once to install
