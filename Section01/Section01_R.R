@@ -17,6 +17,7 @@ library(broom)
 ## Important: Paths are always relative to the RMarkdown file location
 ##            Alternatively, specify your working directory using 
 ##            knitr::opts_chunk$set(root.dir = "xxx")
+setwd('Econ172-Sp21/Section1')
 prop_rights <- read.csv("prop_rights.csv")
 
 prop_rights ## print the dataframe to screen
